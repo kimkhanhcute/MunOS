@@ -20,7 +20,13 @@ extern "C" void isr0_handler()
 }
 extern "C" void irq0_handler()
 {
-    print(".");
+    static int ticks = 0;
+    ticks++;
+
+    if(ticks % 100 == 0)
+    {
+        print(".");
+    }
 }
 void save_history(const char* cmd)
 {
@@ -120,7 +126,7 @@ extern "C" void kernel_main()
     clear();
 	idt_init();
 	pic_remap();
-	//asm volatile("sti");
+	asm volatile("sti");
 	print("IDT loaded\n");
 	print("PIC remapped\n");
     print("====================\n");

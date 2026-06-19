@@ -25,8 +25,9 @@ irq0:
 
     call irq0_handler
 
+    popad
+
     mov al, 0x20
     out 0x20, al
 
-    popad
     iret
