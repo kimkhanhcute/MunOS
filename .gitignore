@@ -1,0 +1,17 @@
+# Build artifacts
+*.o
+*.bin
+*.iso
+
+# Generated files
+iso/boot/kernel.bin
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Temporary files
+*~
+*.swp
