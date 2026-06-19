@@ -3,8 +3,8 @@
 *.bin
 *.iso
 
-# Generated files
-iso/boot/kernel.bin
+# Build directory
+iso/
 
 # Logs
 *.log
