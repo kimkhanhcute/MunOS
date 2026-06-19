@@ -2,8 +2,10 @@
 
 global idt_load
 global isr0
+global irq0
 
 extern isr0_handler
+extern irq0_handler
 
 idt_load:
     mov eax, [esp + 4]
@@ -17,3 +19,14 @@ isr0:
 .hang:
     hlt
     jmp .hang
+
+irq0:
+    pushad
+
+    call irq0_handler
+
+    mov al, 0x20
+    out 0x20, al
+
+    popad
+    iret

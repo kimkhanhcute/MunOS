@@ -18,6 +18,10 @@ extern "C" void isr0_handler()
         asm volatile("hlt");
     }
 }
+extern "C" void irq0_handler()
+{
+    print(".");
+}
 void save_history(const char* cmd)
 {
     if(cmd[0] == 0)
@@ -116,6 +120,7 @@ extern "C" void kernel_main()
     clear();
 	idt_init();
 	pic_remap();
+	//asm volatile("sti");
 	print("IDT loaded\n");
 	print("PIC remapped\n");
     print("====================\n");

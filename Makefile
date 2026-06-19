@@ -56,3 +56,6 @@ github:
 	git add .; \
 	git commit -m "$$msg"; \
 	git push
+
+test:
+	make clean && make && make run

@@ -5,6 +5,7 @@ IDTPointer idt_ptr;
 
 extern "C" void idt_load(uint32_t);
 extern "C" void isr0();
+extern "C" void irq0();
 
 void idt_set_gate(
     int num,
@@ -39,5 +40,11 @@ void idt_init()
         0x08,
         0x8E);
 
+	idt_set_gate(
+	    32,
+	    (uint32_t)irq0,
+	    0x08,
+	    0x8E);
+	
     idt_load((uint32_t)&idt_ptr);
 }
