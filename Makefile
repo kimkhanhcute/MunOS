@@ -47,3 +47,8 @@ run:
 
 clean:
 	rm -rf *.o kernel.bin iso MunOS.iso
+
+github:
+	git add .
+	git commit -m "Update MunOS"
+	git push

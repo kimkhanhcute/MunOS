@@ -17,4 +17,6 @@ struct IDTPointer
     uint32_t base;
 } __attribute__((packed));
 
+extern "C" void isr0();
+
 void idt_init();

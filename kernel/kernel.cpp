@@ -7,7 +7,16 @@
 
 char history[32][128];
 int history_count = 0;
+extern "C" void isr0_handler()
+{
+    print("\n");
+    print("EXCEPTION: DIVIDE BY ZERO\n");
 
+    while(true)
+    {
+        asm volatile("hlt");
+    }
+}
 void save_history(const char* cmd)
 {
     if(cmd[0] == 0)
