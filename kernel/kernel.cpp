@@ -4,6 +4,7 @@
 #include "io.h"
 #include "rtc.h"
 #include "idt.h"
+#include "irq.h"
 
 char history[32][128];
 int history_count = 0;
@@ -114,7 +115,9 @@ extern "C" void kernel_main()
 {
     clear();
 	idt_init();
+	pic_remap();
 	print("IDT loaded\n");
+	print("PIC remapped\n");
     print("====================\n");
     print("      MunOS\n");
     print("====================\n\n");

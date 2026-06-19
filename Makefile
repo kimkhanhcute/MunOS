@@ -33,8 +33,11 @@ idt.o: kernel/idt.cpp
 isr.o: kernel/isr.asm
 	nasm -f elf32 kernel/isr.asm -o isr.o
 
-kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o
-	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o -o kernel.bin
+irq.o: kernel/irq.cpp
+	g++ -m32 -ffreestanding -c kernel/irq.cpp -o irq.o
+
+kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o
+	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o -o kernel.bin
 
 iso: kernel.bin
 	mkdir -p iso/boot/grub
