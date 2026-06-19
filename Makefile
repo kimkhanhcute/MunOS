@@ -52,6 +52,7 @@ clean:
 	rm -rf *.o kernel.bin iso MunOS.iso
 
 github:
-	git add .
-	git commit -m "Update MunOS"
+	@read -p "Commit message: " msg; \
+	git add .; \
+	git commit -m "$$msg"; \
 	git push
