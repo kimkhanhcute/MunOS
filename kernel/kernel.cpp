@@ -3,6 +3,7 @@
 #include "string.h"
 #include "io.h"
 #include "rtc.h"
+#include "idt.h"
 
 char history[32][128];
 int history_count = 0;
@@ -103,7 +104,8 @@ void cmd_date()
 extern "C" void kernel_main()
 {
     clear();
-
+	idt_init();
+	print("IDT loaded\n");
     print("====================\n");
     print("      MunOS\n");
     print("====================\n\n");

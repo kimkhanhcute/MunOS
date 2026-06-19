@@ -27,8 +27,14 @@ string.o:
 rtc.o:
 	$(CXX) $(CXXFLAGS) -c kernel/rtc.cpp -o rtc.o
 
-kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o
-	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o -o kernel.bin
+idt.o: kernel/idt.cpp
+	g++ -m32 -ffreestanding -c kernel/idt.cpp -o idt.o
+
+isr.o: kernel/isr.asm
+	nasm -f elf32 kernel/isr.asm -o isr.o
+
+kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o
+	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o -o kernel.bin
 
 iso: kernel.bin
 	mkdir -p iso/boot/grub
