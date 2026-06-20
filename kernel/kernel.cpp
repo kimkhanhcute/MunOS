@@ -120,7 +120,20 @@ void cmd_date()
     print_int(rtc_get_year());
     print("\n");
 }
-
+void cmd_neofetch() {
+	print("OS: MunOS\n");
+	print("Version: v0.8\n");
+	print("Architecture: x86\n");
+	print("Kernel: Monolithic\n");
+	print("Shell: MunShell\n");
+}
+void cmd_sysinfo() {
+	print("OS: MunOS\n");
+	print("Version: v0.8\n");
+	print("Architecture: x86\n");
+	print("Kernel: Monolithic\n");
+	print("Shell: MunShell\n");
+}
 extern "C" void kernel_main()
 {
     clear();
@@ -175,6 +188,10 @@ extern "C" void kernel_main()
                 print("date\n");
                 print("reboot\n");
                 print("shutdown\n");
+                print("now\n");
+                print("neofetch\n");
+                print("sysinfo\n");
+                print("uname or uname -a\n");
             }
             else if(strcmp(buffer, "about"))
             {
@@ -233,6 +250,25 @@ extern "C" void kernel_main()
             {
                 print(buffer + 5);
                 print("\n");
+            }
+            else if (strcmp(buffer, "now")) {
+            	cmd_date();
+            	print(" ");
+            	cmd_time();
+            }
+            else if (strcmp(buffer, "neofetch")) {
+            	cmd_banner();
+            	print("\n");
+            	cmd_neofetch();
+            }
+            else if (strcmp(buffer, "sysinfo")) {
+            	cmd_sysinfo();
+            }
+            else if (strcmp(buffer, "uname")) {
+				print("MunOS\n");
+            }
+            else if (strcmp(buffer, "uname -a")) {
+            	print("MunOS v0.8 x86\n");
             }
             else if(len != 0)
             {
