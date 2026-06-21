@@ -5,6 +5,7 @@
 #include "rtc.h"
 #include "idt.h"
 #include "irq.h"
+#include "fs.h"
 
 char history[32][128];
 int history_count = 0;
@@ -137,6 +138,7 @@ void cmd_sysinfo() {
 extern "C" void kernel_main()
 {
     clear();
+    fs_init();
 	idt_init();
 	pic_remap();
 	asm volatile("sti");
@@ -192,6 +194,8 @@ extern "C" void kernel_main()
                 print("neofetch\n");
                 print("sysinfo\n");
                 print("uname or uname -a\n");
+                print("calc\nwhoami\nhostname\npwd\n");
+                print("fortune\njoke\nquote");
             }
             else if(strcmp(buffer, "about"))
             {
@@ -270,11 +274,158 @@ extern "C" void kernel_main()
             else if (strcmp(buffer, "uname -a")) {
             	print("MunOS v0.8 x86\n");
             }
+            //else if (strcmp(buffer, "calc")) {
+			//	int a = read_int();
+			//	char op = keyboard_getchar();
+			//	int b = read_int();
+				
+			//	int result = 0;
+				
+			//	if(op == '+')
+			//	    result = a + b;
+			//	else if(op == '-')
+			//	    result = a - b;
+			//	else if(op == '*')
+			//	    result = a * b;
+			//	else if(op == '/')
+			//	    result = a / b;
+				
+			//	print_int(result);
+			//	print("\n");
+            //}
+            else if (strcmp(buffer, "whoami")) {
+            	print("root\n");
+            }
+            else if (strcmp(buffer, "whoami")) {
+                print("MunOS-PC\n");
+            }
+            else if (strcmp(buffer, "pwd")) {
+                print("/home/nguyenduc/MunOS");
+            }
+             else if (strcmp(buffer, "fortune")) {
+                print("keep coding\n");
+            }
+             else if (strcmp(buffer, "joke")) {
+                print("are you gay?\n");
+            }
+             else if (strcmp(buffer, "quote")) {
+                print("be quote\n");
+            }
+            else if(starts_with(buffer, "touch "))
+            {
+                if(fs_create(buffer + 6))
+                {
+                    print("File created\n");
+                }
+                else
+                {
+                    print("Cannot create file\n");
+                }
+            }
+            else if(strcmp(buffer, "ls"))
+            {
+                fs_list();
+            }
+            else if(starts_with(buffer, "rm "))
+            {
+                if(fs_delete(buffer + 3))
+                {
+                    print("File removed\n");
+                }
+                else
+                {
+                    print("File not found\n");
+                }
+            }
+            else if(starts_with(buffer, "cat "))
+            {
+                if(!fs_read(buffer + 4))
+                {
+                    print("File not found\n");
+                }
+            }
+            else if(starts_with(buffer, "write "))
+            {
+                char* p = buffer + 6;
+            
+                while(*p && *p != ' ')
+                    p++;
+            
+                if(*p == 0)
+                {
+                    print("Usage: write <file> <text>\n");
+                }
+                else
+                {
+                    *p = 0;
+            
+                    const char* filename = buffer + 6;
+                    const char* content = p + 1;
+            
+                    if(fs_write(filename, content))
+                    {
+                        print("Written\n");
+                    }
+                    else
+                    {
+                        print("File not found\n");
+                    }
+                }
+            }
+            else if(starts_with(buffer, "append "))
+            {
+                char* p = buffer + 7;
+            
+                while(*p && *p != ' ')
+                    p++;
+            
+                if(*p == 0)
+                {
+                    print("Usage: append <file> <text>\n");
+                }
+                else
+                {
+                    *p = 0;
+            
+                    if(fs_append(buffer + 7, p + 1))
+                        print("Appended\n");
+                    else
+                        print("File not found\n");
+                }
+            }
+            else if(starts_with(buffer, "rename "))
+            {
+                char* p = buffer + 7;
+            
+                while(*p && *p != ' ')
+                    p++;
+            
+                if(*p == 0)
+                {
+                    print("Usage: rename <old> <new>\n");
+                }
+                else
+                {
+                    *p = 0;
+            
+                    if(fs_rename(buffer + 7, p + 1))
+                        print("Renamed\n");
+                    else
+                        print("File not found\n");
+                }
+            }
+            else if(starts_with(buffer, "stat "))
+            {
+                if(!fs_stat(buffer + 5))
+                {
+                    print("File not found\n");
+                }
+            }
             else if(len != 0)
             {
                 print("Unknown command\n");
             }
-
+			
             len = 0;
 
             print("\nmun> ");

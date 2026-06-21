@@ -36,8 +36,11 @@ isr.o: kernel/isr.asm
 irq.o: kernel/irq.cpp
 	g++ -m32 -ffreestanding -c kernel/irq.cpp -o irq.o
 
-kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o
-	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o -o kernel.bin
+fs.o:
+	g++ -m32 -ffreestanding -c kernel/fs.cpp -o fs.o
+
+kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o
+	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o -o kernel.bin
 
 iso: kernel.bin
 	mkdir -p iso/boot/grub
@@ -59,3 +62,12 @@ github:
 
 test:
 	make clean && make && make run
+
+key:
+	@if [ ! -f ~/.ssh/id_ed25519 ]; then \
+		echo "Generating SSH key..."; \
+		ssh-keygen -t ed25519 -C "$(USER)@MunOS" -N "" -f ~/.ssh/id_ed25519; \
+	fi
+	@echo ""
+	@echo "===== PUBLIC KEY ====="
+	@cat ~/.ssh/id_ed25519.pub

@@ -1,0 +1,192 @@
+#include "fs.h"
+#include "string.h"
+#include "vga.h"
+
+File files[32];
+
+void fs_init()
+{
+    for(int i = 0; i < 32; i++)
+    {
+        files[i].used = false;
+    }
+}
+
+bool fs_create(const char* name)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            return false;
+        }
+    }
+
+    for(int i = 0; i < 32; i++)
+    {
+        if(!files[i].used)
+        {
+            int j = 0;
+
+            while(name[j] && j < 31)
+            {
+                files[i].name[j] = name[j];
+                j++;
+            }
+
+            files[i].name[j] = 0;
+            files[i].content[0] = 0;
+            files[i].used = true;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool fs_delete(const char* name)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            files[i].used = false;
+            return true;
+        }
+    }
+
+    return false;
+}
+bool fs_write(const char* name, const char* content)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            int j = 0;
+
+            while(content[j] && j < 255)
+            {
+                files[i].content[j] = content[j];
+                j++;
+            }
+
+            files[i].content[j] = 0;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+bool fs_read(const char* name)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            print(files[i].content);
+            print("\n");
+
+            return true;
+        }
+    }
+
+    return false;
+}
+bool fs_append(const char* name, const char* content)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            int len = 0;
+
+            while(files[i].content[len])
+                len++;
+
+            int j = 0;
+
+            while(content[j] && len < 255)
+            {
+                files[i].content[len++] = content[j++];
+            }
+
+            files[i].content[len] = 0;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+bool fs_rename(const char* oldname, const char* newname)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, oldname))
+        {
+            int j = 0;
+
+            while(newname[j] && j < 31)
+            {
+                files[i].name[j] = newname[j];
+                j++;
+            }
+
+            files[i].name[j] = 0;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+bool fs_stat(const char* name)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            print("Name: ");
+            print(files[i].name);
+            print("\n");
+
+            int size = 0;
+
+            while(files[i].content[size])
+                size++;
+
+            print("Size: ");
+
+            char buf[16];
+            int_to_string(size, buf);
+
+            print(buf);
+            print(" bytes\n");
+
+            return true;
+        }
+    }
+
+    return false;
+}
+void fs_list()
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used)
+        {
+            print(files[i].name);
+            print("\n");
+        }
+    }
+}
