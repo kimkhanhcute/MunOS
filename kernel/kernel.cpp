@@ -421,6 +421,38 @@ extern "C" void kernel_main()
                     print("File not found\n");
                 }
             }
+            else if(starts_with(buffer, "cp "))
+            {
+                char* p = buffer + 3;
+            
+                while(*p && *p != ' ')
+                    p++;
+            
+                if(*p == 0)
+                {
+                    print("Usage: cp <src> <dst>\n");
+                }
+                else
+                {
+                    *p = 0;
+            
+                    const char* src = buffer + 3;
+                    const char* dst = p + 1;
+            
+                    if(fs_copy(src, dst))
+                    {
+                        print("Copied\n");
+                    }
+                    else
+                    {
+                        print("Copy failed\n");
+                    }
+                }
+            }
+            else if(strcmp(buffer, "tree"))
+            {
+                fs_tree();
+            }
             else if(len != 0)
             {
                 print("Unknown command\n");

@@ -179,6 +179,85 @@ bool fs_stat(const char* name)
 
     return false;
 }
+bool fs_copy(const char* src, const char* dst)
+{
+    int src_index = -1;
+
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, src))
+        {
+            src_index = i;
+            break;
+        }
+    }
+
+    if(src_index == -1)
+        return false;
+
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, dst))
+        {
+            return false;
+        }
+    }
+
+    for(int i = 0; i < 32; i++)
+    {
+        if(!files[i].used)
+        {
+            int j = 0;
+
+            while(files[src_index].name[j])
+                j++;
+
+            j = 0;
+
+            while(dst[j] && j < 31)
+            {
+                files[i].name[j] = dst[j];
+                j++;
+            }
+
+            files[i].name[j] = 0;
+
+            j = 0;
+
+            while(files[src_index].content[j] && j < 255)
+            {
+                files[i].content[j] =
+                    files[src_index].content[j];
+
+                j++;
+            }
+
+            files[i].content[j] = 0;
+
+            files[i].used = true;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+void fs_tree()
+{
+    print("/\n");
+
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used)
+        {
+            print("├── ");
+            print(files[i].name);
+            print("\n");
+        }
+    }
+}
 void fs_list()
 {
     for(int i = 0; i < 32; i++)

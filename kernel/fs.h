@@ -15,4 +15,6 @@ bool fs_read(const char* name);
 bool fs_append(const char* name, const char* content);
 bool fs_rename(const char* oldname, const char* newname);
 bool fs_stat(const char* name);
+bool fs_copy(const char* src, const char* dst);
+void fs_tree();
 void fs_list();
