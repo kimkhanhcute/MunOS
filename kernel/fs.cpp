@@ -347,6 +347,42 @@ bool fs_cd(const char* name)
 
     return false;
 }
+bool fs_mv(const char* oldname, const char* newname)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, oldname))
+        {
+            int j = 0;
+
+            while(newname[j] && j < 31)
+            {
+                files[i].name[j] = newname[j];
+                j++;
+            }
+
+            files[i].name[j] = 0;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+bool fs_find(const char* name)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
 void fs_pwd()
 {
     print(current_directory);

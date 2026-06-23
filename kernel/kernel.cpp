@@ -6,9 +6,19 @@
 #include "idt.h"
 #include "irq.h"
 #include "fs.h"
+#include "command.h"
+#include "memory.h"
+#include "panic.h"
+#include "cpu.h"
 
 char history[32][128];
 int history_count = 0;
+extern "C" void panic_main()
+{
+    clear();
+
+    panic("Test panic");
+}
 extern "C" void isr0_handler()
 {
     print("\n");
@@ -141,6 +151,21 @@ extern "C" void kernel_main()
     fs_init();
 	idt_init();
 	pic_remap();
+	char buf[16];
+	
+	memset(buf, 'A', 5);
+	
+	buf[5] = 0;
+	
+	print(buf);
+	print("\n");
+	char src[] = "MunOS";
+	char dst[16];
+	
+	memcpy(dst, src, 6);
+	
+	print(dst);
+	print("\n");
 	asm volatile("sti");
 	print("IDT loaded\n");
 	print("PIC remapped\n");
@@ -178,24 +203,13 @@ extern "C" void kernel_main()
 
             if(strcmp(buffer, "help"))
             {
-                print("Commands:\n");
-                print("help\n");
-                print("about\n");
-                print("clear\n");
-                print("echo\n");
-                print("version\n");
-                print("banner\n");
-                print("history\n");
-                print("time\n");
-                print("date\n");
-                print("reboot\n");
-                print("shutdown\n");
-                print("now\n");
-                print("neofetch\n");
-                print("sysinfo\n");
-                print("uname or uname -a\n");
-                print("calc\nwhoami\nhostname\npwd\n");
-                print("fortune\njoke\nquote");
+                for(int i = 0; i < command_count; i++)
+                {
+                    print(commands[i].name);
+                    print(" - ");
+                    print(commands[i].description);
+                    print("\n");
+                }
             }
             else if(strcmp(buffer, "about"))
             {
@@ -486,6 +500,79 @@ extern "C" void kernel_main()
             else if(strcmp(buffer, "pwd"))
             {
                 fs_pwd();
+            }
+            else if(starts_with(buffer, "mv "))
+            {
+                char* p = buffer + 3;
+            
+                while(*p && *p != ' ')
+                    p++;
+            
+                if(*p == 0)
+                {
+                    print("Usage: mv <old> <new>\n");
+                }
+                else
+                {
+                    *p = 0;
+            
+                    if(fs_mv(buffer + 3, p + 1))
+                    {
+                        print("Moved\n");
+                    }
+                    else
+                    {
+                        print("File not found\n");
+                    }
+                }
+            }
+            else if(starts_with(buffer, "find "))
+            {
+                if(fs_find(buffer + 5))
+                {
+                    print("Found\n");
+                }
+                else
+                {
+                    print("Not found\n");
+                }
+            }
+            else if(starts_with(buffer, "help "))
+            {
+                const char* cmd = buffer + 5;
+            
+                bool found = false;
+            
+                for(int i = 0; i < command_count; i++)
+                {
+                    if(strcmp(cmd, commands[i].name))
+                    {
+                        print("Usage: ");
+                        print(commands[i].usage);
+                        print("\n");
+            
+                        print(commands[i].description);
+                        print("\n");
+            
+                        found = true;
+                        break;
+                    }
+                }
+            
+                if(!found)
+                {
+                    print("Unknown command\n");
+                }
+            }
+            else if(strcmp(buffer, "cpuinfo"))
+            {
+                char vendor[13];
+            
+                cpu_get_vendor(vendor);
+            
+                print("CPU Vendor: ");
+                print(vendor);
+                print("\n");
             }
             else if(len != 0)
             {

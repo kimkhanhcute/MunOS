@@ -39,8 +39,20 @@ irq.o: kernel/irq.cpp
 fs.o:
 	g++ -m32 -ffreestanding -c kernel/fs.cpp -o fs.o
 
-kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o
-	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o -o kernel.bin
+command.o:
+	g++ -m32 -ffreestanding -c kernel/command.cpp -o command.o
+
+memory.o:
+	g++ -m32 -ffreestanding -c kernel/memory.cpp -o memory.o
+
+panic.o:
+	g++ -m32 -ffreestanding -c kernel/panic.cpp -o panic.o
+
+cpu.o:
+	g++ -m32 -ffreestanding -c kernel/cpu.cpp -o cpu.o
+
+kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o
+	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o -o kernel.bin
 
 iso: kernel.bin
 	mkdir -p iso/boot/grub
