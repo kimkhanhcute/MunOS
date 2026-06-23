@@ -567,11 +567,17 @@ extern "C" void kernel_main()
             else if(strcmp(buffer, "cpuinfo"))
             {
                 char vendor[13];
+                char brand[49];
             
                 cpu_get_vendor(vendor);
+                cpu_get_brand(brand);
             
-                print("CPU Vendor: ");
+                print("Vendor: ");
                 print(vendor);
+                print("\n");
+            
+                print("Model : ");
+                print(brand);
                 print("\n");
             }
             else if(len != 0)
