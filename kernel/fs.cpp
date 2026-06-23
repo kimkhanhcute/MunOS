@@ -9,6 +9,7 @@ void fs_init()
     for(int i = 0; i < 32; i++)
     {
         files[i].used = false;
+        files[i].is_directory = false;
     }
 }
 
@@ -244,19 +245,75 @@ bool fs_copy(const char* src, const char* dst)
 
     return false;
 }
-void fs_tree()
+bool fs_mkdir(const char* name)
 {
-    print("/\n");
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           strcmp(files[i].name, name))
+        {
+            return false;
+        }
+    }
 
     for(int i = 0; i < 32; i++)
     {
-        if(files[i].used)
+        if(!files[i].used)
         {
-            print("├── ");
-            print(files[i].name);
-            print("\n");
+            int j = 0;
+
+            while(name[j] && j < 31)
+            {
+                files[i].name[j] = name[j];
+                j++;
+            }
+
+            files[i].name[j] = 0;
+
+            files[i].content[0] = 0;
+            files[i].used = true;
+            files[i].is_directory = true;
+
+            return true;
         }
     }
+
+    return false;
+}
+bool fs_rmdir(const char* name)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           files[i].is_directory &&
+           strcmp(files[i].name, name))
+        {
+            files[i].used = false;
+            return true;
+        }
+    }
+
+    return false;
+}
+void fs_tree()
+{
+    print("/\n");
+    
+        for(int i = 0; i < 32; i++)
+        {
+            if(files[i].used)
+            {
+                print("├── ");
+                print(files[i].name);
+    
+                if(files[i].is_directory)
+                {
+                    print("/");
+                }
+    
+                print("\n");
+            }
+        }
 }
 void fs_list()
 {

@@ -453,6 +453,28 @@ extern "C" void kernel_main()
             {
                 fs_tree();
             }
+            else if(starts_with(buffer, "mkdir "))
+            {
+                if(fs_mkdir(buffer + 6))
+                {
+                    print("Directory created\n");
+                }
+                else
+                {
+                    print("Cannot create directory\n");
+                }
+            }
+            else if(starts_with(buffer, "rmdir "))
+            {
+                if(fs_rmdir(buffer + 6))
+                {
+                    print("Directory removed\n");
+                }
+                else
+                {
+                    print("Directory not found\n");
+                }
+            }
             else if(len != 0)
             {
                 print("Unknown command\n");
