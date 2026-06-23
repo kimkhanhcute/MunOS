@@ -299,10 +299,7 @@ extern "C" void kernel_main()
             else if (strcmp(buffer, "whoami")) {
                 print("MunOS-PC\n");
             }
-            else if (strcmp(buffer, "pwd")) {
-                print("/home/nguyenduc/MunOS");
-            }
-             else if (strcmp(buffer, "fortune")) {
+            else if (strcmp(buffer, "fortune")) {
                 print("keep coding\n");
             }
              else if (strcmp(buffer, "joke")) {
@@ -474,6 +471,21 @@ extern "C" void kernel_main()
                 {
                     print("Directory not found\n");
                 }
+            }
+            else if(starts_with(buffer, "cd "))
+            {
+                if(fs_cd(buffer + 3))
+                {
+                    print("Changed directory\n");
+                }
+                else
+                {
+                    print("Directory not found\n");
+                }
+            }
+            else if(strcmp(buffer, "pwd"))
+            {
+                fs_pwd();
             }
             else if(len != 0)
             {

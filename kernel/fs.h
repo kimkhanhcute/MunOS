@@ -19,5 +19,7 @@ bool fs_stat(const char* name);
 bool fs_copy(const char* src, const char* dst);
 bool fs_mkdir(const char* name);
 bool fs_rmdir(const char* name);
+bool fs_cd(const char* name);
+void fs_pwd();
 void fs_tree();
 void fs_list();

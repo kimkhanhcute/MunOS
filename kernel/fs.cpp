@@ -3,7 +3,7 @@
 #include "vga.h"
 
 File files[32];
-
+char current_directory[32] = "/";
 void fs_init()
 {
     for(int i = 0; i < 32; i++)
@@ -314,6 +314,43 @@ void fs_tree()
                 print("\n");
             }
         }
+}
+bool fs_cd(const char* name)
+{
+    if(strcmp(name, "/"))
+    {
+        current_directory[0] = '/';
+        current_directory[1] = 0;
+
+        return true;
+    }
+
+    for(int i = 0; i < 32; i++)
+    {
+        if(files[i].used &&
+           files[i].is_directory &&
+           strcmp(files[i].name, name))
+        {
+            int j = 0;
+
+            while(name[j] && j < 31)
+            {
+                current_directory[j] = name[j];
+                j++;
+            }
+
+            current_directory[j] = 0;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+void fs_pwd()
+{
+    print(current_directory);
+    print("\n");
 }
 void fs_list()
 {
