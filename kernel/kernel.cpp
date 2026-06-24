@@ -10,6 +10,7 @@
 #include "memory.h"
 #include "panic.h"
 #include "cpu.h"
+#include "speaker.h"
 
 char history[32][128];
 int history_count = 0;
@@ -606,6 +607,11 @@ extern "C" void kernel_main()
                 print("Heap free: ");
                 print_int(heap_free());
                 print(" bytes\n");
+            }
+            else if(strcmp(buffer, "beep"))
+            {
+            	print("Beep!\n");
+                speaker_beep();
             }
             else if(len != 0)
             {

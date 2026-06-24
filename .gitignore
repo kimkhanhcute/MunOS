@@ -1,20 +1,16 @@
-# Build artifacts
+# Python
+.venv/
+venv/
+grocky-env/
+__pycache__/
+*.pyc
+
+# Secrets
+*.venv
+.env
+.env.*
+
+# Build
 *.o
 *.bin
 *.iso
-
-# Build directory
-iso/
-
-# Logs
-*.log
-
-# VS Code
-.vscode/
-
-# Temporary files
-*~
-*.swp
-*.venv
-*.venv
-*.venv
