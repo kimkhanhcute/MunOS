@@ -15,3 +15,6 @@ iso/
 # Temporary files
 *~
 *.swp
+*.venv
+*.venv
+*.venv

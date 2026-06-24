@@ -11,3 +11,9 @@ void* memset(void* dst,
 int memcmp(const void* a,
            const void* b,
            int size);
+
+void memory_init();
+
+void* kmalloc(unsigned int size);
+unsigned int heap_used();
+unsigned int heap_free();

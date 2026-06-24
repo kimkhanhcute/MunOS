@@ -151,6 +151,23 @@ extern "C" void kernel_main()
     fs_init();
 	idt_init();
 	pic_remap();
+	memory_init();
+	char* a = (char*)kmalloc(16);
+	char* b = (char*)kmalloc(16);
+	
+	print_int((uint32_t)a);
+	print("\n");
+	
+	print_int((uint32_t)b);
+	print("\n");
+	char* text = (char*)kmalloc(16);
+	
+	text[0] = 'O';
+	text[1] = 'K';
+	text[2] = 0;
+	
+	print(text);
+	print("\n");
 	char buf[16];
 	
 	memset(buf, 'A', 5);
@@ -579,6 +596,16 @@ extern "C" void kernel_main()
                 print("Model : ");
                 print(brand);
                 print("\n");
+            }
+            else if(strcmp(buffer, "meminfo"))
+            {
+                print("Heap used: ");
+                print_int(heap_used());
+                print(" bytes\n");
+            
+                print("Heap free: ");
+                print_int(heap_free());
+                print(" bytes\n");
             }
             else if(len != 0)
             {
