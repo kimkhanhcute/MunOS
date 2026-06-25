@@ -15,6 +15,7 @@
 #include "queue.h"
 #include "stack.h"
 #include "history.h"
+#include "task.h"
 
 char history[32][128];
 int history_count = 0;
@@ -796,6 +797,45 @@ extern "C" void kernel_main()
             {
                 history_clear();
                 print("History cleared\n");
+            }
+            else if(strcmp(buffer, "taskadd shell"))
+            {
+                task_add("shell");
+                print("Task added\n");
+            }
+            else if(strcmp(buffer, "taskadd idle"))
+            {
+                task_add("idle");
+                print("Task added\n");
+            }
+            else if(strcmp(buffer, "tasklist"))
+            {
+                task_list();
+            }
+            else if(strcmp(buffer, "taskcount"))
+            {
+                print("Tasks: ");
+                print_char('0' + task_count());
+                print("\n");
+            }
+            else if(strcmp(buffer, "taskclear"))
+            {
+                task_clear();
+                print("Task list cleared\n");
+            }
+            else if(strcmp(buffer, "taskkill 1"))
+            {
+                if(task_kill(1))
+                    print("Task killed\n");
+                else
+                    print("Task not found\n");
+            }
+            else if(strcmp(buffer, "taskkill 2"))
+            {
+                if(task_kill(2))
+                    print("Task killed\n");
+                else
+                    print("Task not found\n");
             }
             else if(len != 0)
             {
