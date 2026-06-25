@@ -11,6 +11,7 @@
 #include "panic.h"
 #include "cpu.h"
 #include "speaker.h"
+#include "list.h"
 
 char history[32][128];
 int history_count = 0;
@@ -612,6 +613,39 @@ extern "C" void kernel_main()
             {
             	print("Beep!\n");
                 speaker_beep();
+            }
+            else if(strcmp(buffer, "listtest"))
+            {
+                list_push('A');
+                list_push('B');
+                list_push('C');
+            
+                list_print();
+            }
+            else if(strcmp(buffer, "listcount"))
+            {
+                print("Nodes: ");
+            
+                print_char('0' + list_count());
+            
+                print("\n");
+            }
+            else if(strcmp(buffer, "listclear"))
+            {
+                list_clear();
+            
+                print("List cleared\n");
+            }
+            else if(strcmp(buffer, "listfind"))
+            {
+                if(list_find('B'))
+                {
+                    print("Found\n");
+                }
+                else
+                {
+                    print("Not found\n");
+                }
             }
             else if(len != 0)
             {
