@@ -16,7 +16,7 @@
 #include "stack.h"
 #include "history.h"
 #include "task.h"
-
+volatile unsigned int timer_ticks = 0;
 char history[32][128];
 int history_count = 0;
 extern "C" void panic_main()
@@ -37,13 +37,12 @@ extern "C" void isr0_handler()
 }
 extern "C" void irq0_handler()
 {
-    static int ticks = 0;
-    ticks++;
-
-    if(ticks % 100 == 0)
-    {
-        print(".");
-    }
+	timer_ticks++;
+	
+	if(timer_ticks % 100 == 0)
+	{
+	    task_schedule();
+	}
 }
 void save_history(const char* cmd)
 {
@@ -836,6 +835,14 @@ extern "C" void kernel_main()
                     print("Task killed\n");
                 else
                     print("Task not found\n");
+            }
+            else if(strcmp(buffer, "schedule"))
+            {
+                task_schedule();
+            }
+            else if(strcmp(buffer, "taskcrt"))
+            {
+                task_current();
             }
             else if(len != 0)
             {

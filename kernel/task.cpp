@@ -7,6 +7,7 @@ struct Task
 {
     int id;
     char name[32];
+    bool running;
     Task* next;
 };
 
@@ -18,7 +19,7 @@ void task_add(const char* name)
 
     task->id = next_id++;
     task->next = 0;
-
+	task->running = false;
     int i = 0;
     while(name[i] && i < 31)
     {
@@ -53,6 +54,17 @@ void task_list()
         print(" ");
 
         print(cur->name);
+        print(" ");
+
+        if(cur->running)
+        {
+            print("RUNNING");
+        }
+        else
+        {
+            print("READY");
+        }
+
         print("\n");
 
         cur = cur->next;
@@ -102,4 +114,43 @@ bool task_kill(int id)
     }
 
     return false;
+}
+static Task* current_task = 0;
+
+void task_schedule()
+{
+    if(head == 0)
+        return;
+
+    if(current_task == 0)
+    {
+        current_task = head;
+        current_task->running = true;
+        return;
+    }
+
+    current_task->running = false;
+
+    if(current_task->next)
+        current_task = current_task->next;
+    else
+        current_task = head;
+
+    current_task->running = true;
+
+    print("Running: ");
+    print(current_task->name);
+    print("\n");
+}
+void task_current()
+{
+    if(current_task == 0)
+    {
+        print("No current task\n");
+        return;
+    }
+
+    print("Current: ");
+    print(current_task->name);
+    print("\n");
 }
