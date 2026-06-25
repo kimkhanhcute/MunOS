@@ -614,12 +614,27 @@ extern "C" void kernel_main()
             	print("Beep!\n");
                 speaker_beep();
             }
-            else if(strcmp(buffer, "listtest"))
+            else if(
+                buffer[0]=='l' &&
+                buffer[1]=='i' &&
+                buffer[2]=='s' &&
+                buffer[3]=='t' &&
+                buffer[4]=='a' &&
+                buffer[5]=='d' &&
+                buffer[6]=='d' &&
+                buffer[7]==' '
+            )
             {
-                list_push('A');
-                list_push('B');
-                list_push('C');
+                char value = buffer[8];
             
+                list_push(value);
+            
+                print("Added ");
+                print_char(value);
+                print("\n");
+            }
+            else if(strcmp(buffer, "listshow"))
+            {
                 list_print();
             }
             else if(strcmp(buffer, "listcount"))
