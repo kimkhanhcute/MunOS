@@ -63,8 +63,11 @@ queue.o:
 stack.o:
 	g++ -m32 -ffreestanding -c kernel/stack.cpp -o stack.o
 
-kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o queue.o stack.o
-	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o queue.o stack.o -o kernel.bin
+history.o:
+	g++ -m32 -ffreestanding -c kernel/history.cpp -o history.o
+
+kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o queue.o stack.o history.o
+	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o queue.o stack.o history.o -o kernel.bin
 
 iso: kernel.bin
 	mkdir -p iso/boot/grub

@@ -14,6 +14,8 @@
 #include "list.h"
 #include "queue.h"
 #include "stack.h"
+#include "history.h"
+
 char history[32][128];
 int history_count = 0;
 extern "C" void panic_main()
@@ -779,6 +781,21 @@ extern "C" void kernel_main()
                 stack_clear();
             
                 print("Stack cleared\n");
+            }
+            else if(strcmp(buffer, "history"))
+            {
+                history_show();
+            }
+            else if(strcmp(buffer, "historycount"))
+            {
+                print("Commands: ");
+                print_char('0' + history_get_count());
+                print("\n");
+            }
+            else if(strcmp(buffer, "historyclear"))
+            {
+                history_clear();
+                print("History cleared\n");
             }
             else if(len != 0)
             {
