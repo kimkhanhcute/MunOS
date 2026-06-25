@@ -57,8 +57,11 @@ cpu.o:
 list.o:
 	g++ -m32 -ffreestanding -c kernel/list.cpp -o list.o
 
-kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o
-	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o -o kernel.bin
+queue.o:
+	g++ -m32 -ffreestanding -c kernel/queue.cpp -o queue.o
+
+kernel.bin: boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o queue.o
+	ld $(LDFLAGS) boot.o kernel.o vga.o io.o keyboard.o string.o rtc.o idt.o isr.o irq.o fs.o command.o memory.o panic.o cpu.o speaker.o list.o queue.o -o kernel.bin
 
 iso: kernel.bin
 	mkdir -p iso/boot/grub

@@ -12,6 +12,7 @@
 #include "cpu.h"
 #include "speaker.h"
 #include "list.h"
+#include "queue.h"
 
 char history[32][128];
 int history_count = 0;
@@ -661,6 +662,57 @@ extern "C" void kernel_main()
                 {
                     print("Not found\n");
                 }
+            }
+            else if(
+                buffer[0]=='q' &&
+                buffer[1]=='u' &&
+                buffer[2]=='e' &&
+                buffer[3]=='u' &&
+                buffer[4]=='e' &&
+                buffer[5]=='a' &&
+                buffer[6]=='d' &&
+                buffer[7]=='d' &&
+                buffer[8]==' '
+            )
+            {
+                char value = buffer[9];
+            
+                queue_push(value);
+            
+                print("Added ");
+                print_char(value);
+                print("\n");
+            }
+            else if(strcmp(buffer, "queueshow"))
+            {
+                queue_show();
+            }
+            else if(strcmp(buffer, "queuepop"))
+            {
+                char value = queue_pop();
+            
+                if(value == 0)
+                {
+                    print("Queue empty\n");
+                }
+                else
+                {
+                    print("Popped ");
+                    print_char(value);
+                    print("\n");
+                }
+            }
+            else if(strcmp(buffer, "queuecount"))
+            {
+                print("Nodes: ");
+                print_char('0' + queue_count());
+                print("\n");
+            }
+            else if(strcmp(buffer, "queueclear"))
+            {
+                queue_clear();
+            
+                print("Queue cleared\n");
             }
             else if(len != 0)
             {
