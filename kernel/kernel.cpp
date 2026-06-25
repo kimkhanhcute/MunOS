@@ -13,7 +13,7 @@
 #include "speaker.h"
 #include "list.h"
 #include "queue.h"
-
+#include "stack.h"
 char history[32][128];
 int history_count = 0;
 extern "C" void panic_main()
@@ -713,6 +713,72 @@ extern "C" void kernel_main()
                 queue_clear();
             
                 print("Queue cleared\n");
+            }
+            else if(
+                buffer[0]=='s' &&
+                buffer[1]=='t' &&
+                buffer[2]=='a' &&
+                buffer[3]=='c' &&
+                buffer[4]=='k' &&
+                buffer[5]=='a' &&
+                buffer[6]=='d' &&
+                buffer[7]=='d' &&
+                buffer[8]==' '
+            )
+            {
+                char value = buffer[9];
+            
+                stack_push(value);
+            
+                print("Added ");
+                print_char(value);
+                print("\n");
+            }
+            else if(strcmp(buffer, "stackshow"))
+            {
+                stack_show();
+            }
+            else if(strcmp(buffer, "stackpop"))
+            {
+                char value = stack_pop();
+            
+                if(value == 0)
+                {
+                    print("Stack empty\n");
+                }
+                else
+                {
+                    print("Popped ");
+                    print_char(value);
+                    print("\n");
+                }
+            }
+            else if(strcmp(buffer, "stackpop"))
+            {
+                char value = stack_pop();
+            
+                if(value == 0)
+                {
+                    print("Stack empty\n");
+                }
+                else
+                {
+                    print("Popped ");
+                    print_char(value);
+                    print("\n");
+                }
+            }
+            else if(strcmp(buffer, "stackcount"))
+            {
+                print("Nodes: ");
+                print_char('0' + stack_count());
+                print("\n");
+            }
+            else if(strcmp(buffer, "stackclear"))
+            {
+                stack_clear();
+            
+                print("Stack cleared\n");
             }
             else if(len != 0)
             {
