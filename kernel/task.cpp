@@ -3,23 +3,17 @@
 #include "string.h"
 #include "vga.h"
 
-struct Task
-{
-    int id;
-    char name[32];
-    bool running;
-    Task* next;
-};
-
 static Task* head = 0;
 static int next_id = 1;
+volatile unsigned int debug_sleep_calls = 0;
 void task_add(const char* name)
 {
     Task* task = (Task*)kmalloc(sizeof(Task));
 
     task->id = next_id++;
     task->next = 0;
-	task->running = false;
+    task->state = TASK_READY;
+    task->sleep_ticks = 0;
     int i = 0;
     while(name[i] && i < 31)
     {
@@ -56,13 +50,29 @@ void task_list()
         print(cur->name);
         print(" ");
 
-        if(cur->running)
+        switch(cur->state)
         {
-            print("RUNNING");
-        }
-        else
-        {
-            print("READY");
+            case TASK_READY:
+                print("READY");
+                break;
+        
+            case TASK_RUNNING:
+                print("RUNNING");
+                break;
+        
+            case TASK_SLEEPING:
+                print("SLEEPING");
+                break;
+        
+            case TASK_TERMINATED:
+                print("TERMINATED");
+                break;
+        	case TASK_BLOCKED:
+        		print("BLOCKED");
+        		break;
+            default:
+                print("UNKNOWN");
+                break;
         }
 
         print("\n");
@@ -125,18 +135,24 @@ void task_schedule()
     if(current_task == 0)
     {
         current_task = head;
-        current_task->running = true;
+        current_task->state = TASK_RUNNING;
         return;
     }
 
-    current_task->running = false;
+    current_task->state = TASK_READY;
 
     if(current_task->next)
         current_task = current_task->next;
     else
         current_task = head;
-
-    current_task->running = true;
+	while(current_task->state != TASK_READY)
+	{
+	    if(current_task->next)
+	        current_task = current_task->next;
+	    else
+	        current_task = head;
+	}
+    current_task->state = TASK_RUNNING;
 
     print("Running: ");
     print(current_task->name);
@@ -153,4 +169,42 @@ void task_current()
     print("Current: ");
     print(current_task->name);
     print("\n");
+}
+bool task_sleep(int id, unsigned int ticks)
+{
+    Task* cur = head;
+
+    while(cur)
+    {
+        if(cur->id == id)
+        {
+            cur->state = TASK_SLEEPING;
+            cur->sleep_ticks = ticks;
+            return true;
+        }
+
+        cur = cur->next;
+    }
+
+    return false;
+}
+void task_update_sleep()
+{
+	debug_sleep_calls++;
+    Task* cur = head;
+	
+    while(cur)
+    {
+        if(cur->state == TASK_SLEEPING)
+        {
+        	print(".");
+            if(cur->sleep_ticks > 0)
+                cur->sleep_ticks--;
+
+            if(cur->sleep_ticks == 0)
+                cur->state = TASK_READY;
+        }
+
+        cur = cur->next;
+    }
 }

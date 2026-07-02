@@ -100,3 +100,14 @@ void print_char(char c)
 {
     putchar(c);
 }
+void print_hex(unsigned int value)
+{
+    const char* hex = "0123456789ABCDEF";
+
+    print("0x");
+
+    for(int i = 28; i >= 0; i -= 4)
+    {
+        print_char(hex[(value >> i) & 0xF]);
+    }
+}

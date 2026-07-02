@@ -39,6 +39,8 @@ extern "C" void irq0_handler()
 {
 	timer_ticks++;
 	
+	task_update_sleep();
+	
 	if(timer_ticks % 100 == 0)
 	{
 	    task_schedule();
@@ -157,13 +159,16 @@ extern "C" void kernel_main()
 	idt_init();
 	pic_remap();
 	memory_init();
+	task_add("shell");
+	task_add("idle");
+	task_add("worker");
 	char* a = (char*)kmalloc(16);
 	char* b = (char*)kmalloc(16);
 	
-	print_int((uint32_t)a);
+	print_hex((uint32_t)a);
 	print("\n");
 	
-	print_int((uint32_t)b);
+	print_hex((uint32_t)b);
 	print("\n");
 	char* text = (char*)kmalloc(16);
 	
@@ -188,6 +193,22 @@ extern "C" void kernel_main()
 	
 	print(dst);
 	print("\n");
+	{
+	    char* a = (char*)kmalloc(100);
+	    char* b = (char*)kmalloc(50);
+	
+	    kfree(a);
+	
+	    char* c = (char*)kmalloc(80);
+	
+	    print("a = ");
+	    print_hex((uint32_t)a);
+	    print("\n");
+	
+	    print("c = ");
+	    print_hex((uint32_t)c);
+	    print("\n");
+	}
 	asm volatile("sti");
 	print("IDT loaded\n");
 	print("PIC remapped\n");
@@ -844,6 +865,10 @@ extern "C" void kernel_main()
             {
                 task_current();
             }
+            //else if(strcmp(buffer, "debugsleep"))
+            //{
+            //	print_int(debug_sleep_calls);
+            //}
             else if(len != 0)
             {
                 print("Unknown command\n");
